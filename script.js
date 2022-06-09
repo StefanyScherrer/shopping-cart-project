@@ -14,50 +14,47 @@ const createTotalPrice = () => {
   totalPrice.innerText = totalCart();
 };
 
-const createProductImageElement = (imageSource) => {
+function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-};
-
-const createCustomElement = (element, className, innerText) => {
+}
+function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
-};
-
-const createProductItemElement = ({ sku, name, image }) => {
+}
+function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
+}
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+// function cartItemClickListener(event) {
+async function cartItemClickListener(event) {
+  event.target.remove();
+  const content = itemsCart.innerHTML;
+  createTotalPrice();
+
+  saveCartItems(content);
+}
+
+const load = (item) => {
+  const divLoad = document.createElement('div');
+  divLoad.className = 'loading';
+  divLoad.innerText = 'carregando...';
+  item.appendChild(divLoad);
 };
-
-const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
-
-// const cartItemClickListener = (event) => {
-  async function cartItemClickListener(event) {
-    event.target.remove();
-    const content = itemsCart.innerHTML;
-    createTotalPrice();
-  
-    saveCartItems(content);
-  }
-  const load = (item) => {
-    const divLoad = document.createElement('div');
-    divLoad.className = 'loading';
-    divLoad.innerText = 'carregando...';
-    item.appendChild(divLoad);
-};
-
-const createCartItemElement = ({ sku, name, salePrice }) => {
+function createCartItemElement({ sku, name, salePrice }) {
   const getItems = document.querySelector('.items');
   load(getItems);
   const li = document.createElement('li');
@@ -65,9 +62,7 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-};
-
-window.onload = () => { };
+}
 const loadProducts = async () => {
   const getItems = document.querySelector('.items');
   const array = await fetchProducts('computador');
@@ -75,6 +70,8 @@ const loadProducts = async () => {
     getItems.appendChild(createProductItemElement({ sku, name, image }));
   });
 };
+
+const sumPrices = (array) => array.reduce((crr, acc) => crr + acc);
 
 const addToCart = async (event) => {
   const cart = document.querySelector('ol');
@@ -89,26 +86,22 @@ const addToCart = async (event) => {
   const content = itemsCart.innerHTML;
   saveCartItems(content);
 };
-
 const setupAddToCart = () => {
   const buttonCart = document.querySelectorAll('.item__add');
   buttonCart.forEach((buttonAdd) => {
     buttonAdd.addEventListener('click', addToCart);
   });
 };
-
 const addActionLi = () => {
   const cartItens = document.querySelectorAll('.cart__item');
   cartItens.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
-
 const restore = () => {
   const cart = document.querySelector('ol');
   const restoredList = getSavedCartItems();
   cart.innerHTML = restoredList;
   addActionLi();
 };
-
 const clearCart = () => {
   const buttonCart = document.querySelectorAll('.cart__item');
   buttonCart.forEach((item) => {
@@ -120,17 +113,14 @@ const clearCart = () => {
 };
 
 const bntClear = document.querySelector('.empty-cart');
-
 const removeLoad = async () => {
   const getLoad = await document.querySelector('.loading'); 
   getLoad.remove();
 };
-
 window.onload = async () => { 
   await loadProducts();
   removeLoad();
   restore(); 
   setupAddToCart();
 };
-
 bntClear.addEventListener('click', clearCart);
