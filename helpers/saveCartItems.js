@@ -3,8 +3,8 @@
   // const saveCartItems = (itemsSave) => {
   //   localStorage.setItem('cartItems', itemsSave);
   // };
-  const saveCartItems = (value) => {
-    localStorage.setItem('cartItems', value);
+  const saveCartItems = (cartOl) => {
+    localStorage.setItem('cartItems', cartOl);
   };
 
 if (typeof module !== 'undefined') {
