@@ -9,9 +9,9 @@ const totalCart = () => {
    return soma;
 };
 
-const createTotalPrice = () => {
+const createTotalPrice = async () => {
   const totalPrice = document.querySelector('.total-price');
-  totalPrice.innerText = totalCart();
+  totalPrice.innerText = await totalCart();
 };
 
 function createProductImageElement(imageSource) {
